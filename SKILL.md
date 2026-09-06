@@ -254,20 +254,22 @@ evidence: [{artifact_ref, line, 说明}]
 
 > 完整规则与归档算法见 `references/04-记忆规则.md`。执行本技能期间，记忆操作由总监统一负责（角色不单独写记忆）。
 
-**记忆目录**：`.skills-memory/` 创建在**当前交付项目根**下（`.git` 所在目录，非技能目录）。结构：
+**记忆目录**：`memory/` 创建在**技能根目录**下（与 SKILL.md 同级，即本技能安装/存放位置），随技能携带。结构：
 
 ```
-.skills-memory/
-├── MEMORY.md              # 热记忆：可复用决策、项目约定（按 ## 技能名分段）
-├── project-tracker.md     # 项目进度台账：任务进度/里程碑/关键裁决 Ruling
-├── YYYY-MM-DD.md          # 活跃日志：当日交付记录（追加模式）
+{技能根}/memory/
+├── README.md              # 目录说明
+├── MEMORY.md              # 长期记忆：可复用决策/项目约定（分段维护）
+├── project-tracker.md     # 项目进度台账：任务进度/里程碑/裁决 Ruling
+├── YYYY-MM-DD.md          # 活跃日志：当日记录（追加模式）
 └── archive/               # 冷归档（月度摘要）
 ```
 
-**执行节奏**：
-1. **执行前（Step 0 加载）**：若为延续项目，读 `MEMORY.md` + 最近日志 + `project-tracker.md`，定位上次中断的 Phase/进度，避免从零规划；全新项目跳过。
-2. **执行中（每 Phase 完成）**：在今日日志追加条目 `[mvp-expert-team] Phase {N} - {关键决策/裁决/踩坑}`，一行一条；关键裁决（Ruling：决定—理由—代价）写入 `project-tracker.md`。
-3. **执行后（交付完成）**：将可复用经验去重后写入 `MEMORY.md` 对应分段（每条 1-2 行），随后执行轮转检查。
+**每次调用本技能都必须执行「先读后写」**：
+1. **调用前（Step 0 加载）**：读 `memory/MEMORY.md` + `memory/YYYY-MM-DD.md`（今日）+ `memory/project-tracker.md`。若为延续项目，据此定位上次中断的 Phase/进度，避免从零规划；全新请求则跳过加载（仅确认无延续上下文）。
+2. **调用中（每 Phase 完成）**：在今日日志追加条目 `[mvp-expert-team] Phase {N} - {关键决策/裁决/踩坑}`，一行一条；关键裁决（Ruling：决定—理由—代价）写入 `project-tracker.md`。
+3. **调用后（交付完成）**：将可复用经验去重后写入 `MEMORY.md` 对应分段（每条 1-2 行），随后执行轮转检查。
+4. **记忆文件不存在时自动创建**：`memory/` 目录缺失（新 clone/精简副本）→ 按上述结构 `mkdir -p` 并写入骨架（README.md 随仓库内置，MEMORY.md/project-tracker.md/当日日志/archive 由首次调用自动补齐）。
 
 **日志格式**（与交付物同等要求，缺失即补写）：
 ```
