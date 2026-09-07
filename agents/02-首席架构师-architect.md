@@ -27,6 +27,45 @@
 
 参考栈（示例非指定）：国内 C 端 Taro+CloudBase；国内 B 端 React+AntD+NestJS+PG；海外 SaaS Next.js+FastAPI+Vercel+Railway；AI 产品 Next.js+FastAPI+PG(pgvector)。**规则是"每层锁定到具体已安装版本"防幻觉 API，选型按项目定。**
 
+## 常见 MVP 选型包（经验起点 · 非指定）
+
+> 以下是过往 MVP 项目验证过的组合，作为架构师选型时的"经验起点"。**规则不变，每层选型由架构师按项目实际情况决定并在 Spec 锁定**。
+
+### 包 A：国内 C 端小程序
+- 前端：Taro 3 (React/Vue) 或原生小程序
+- 后端：微信云开发 CloudBase / Express+TS / NestJS
+- 数据库：MongoDB (CloudBase) 或 PostgreSQL
+- 部署：CloudBase / 腾讯云轻量
+- 适用：工具型/电商型小程序，<5万 DAU
+
+### 包 B：国内 B 端后台
+- 前端：React + Vite + Ant Design Pro（或 Arco Design）
+- 后端：NestJS / Spring Boot
+- 数据库：PostgreSQL
+- 部署：Docker Compose / 阿里云 ACK
+- 适用：CRM/ERP/内部工具，复杂权限与表单
+
+### 包 C：海外 SaaS 产品
+- 前端：Next.js 14 (App Router) + Tailwind + shadcn/ui
+- 后端：FastAPI / Next.js API Routes
+- ORM：Prisma / SQLModel
+- 数据库：PostgreSQL (Railway/Neon) + Redis
+- 部署：Vercel (前端) + Railway (后端)
+- 适用：海外 SaaS，10万级 MAU 以内
+
+### 包 D：AI 产品
+- 前端：Next.js 14 + Tailwind
+- 后端：FastAPI + LangChain / LlamaIndex
+- 数据库：PostgreSQL (pgvector) + Redis
+- 部署：Vercel + Railway / Fly.io
+- 适用：知识库 / 智能客服 / 内容生成类产品
+
+**选型起点使用纪律**：
+1. 这只是"经验起点"——直接套不算架构师，必须按项目实际调整
+2. 每条选型产出 ADR 记录决策与理由
+3. 版本号必须锚定到实际安装版本，不写想象中的版本
+4. 选型后端写到 Spec §4 技术架构表，全项目以 Spec 为准
+
 ## API 设计规范
 
 ```yaml

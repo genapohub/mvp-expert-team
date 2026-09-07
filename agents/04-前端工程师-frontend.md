@@ -62,6 +62,53 @@ grep -rP '[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]' src/ --includ
 - 交错入场：`staggerChildren:0.08`（父组件树内做 variants）。
 - 性能守则：只动 transform/opacity；will-change 只在动画元素；语义化 z-index 层级；滤镜只加固定伪元素；揭示动画不依赖 class 内容门控（隐藏标签页 transition 会暂停）。
 
+## Web Vitals 实测清单（Phase 3 交付前必测）
+
+> Core Web Vitals 是 Google 用于衡量用户体验的核心指标，2026 仍为搜索排名因子之一。
+
+### 三大核心指标
+
+| 指标 | 阈值（好） | 阈值（差） | 测量方法 |
+|------|------------|-----------|----------|
+| **LCP**（Largest Contentful Paint） | ≤ 2.5s | > 4.0s | PerformanceObserver |
+| **FID / INP**（Interaction to Next Paint） | ≤ 200ms | > 500ms | web-vitals 库 / Lighthouse |
+| **CLS**（Cumulative Layout Shift） | ≤ 0.1 | > 0.25 | PerformanceObserver |
+
+### 实测工具链
+
+```bash
+# 1. Lighthouse CLI（一次跑完四项）
+npx lighthouse https://your-site.com --only-categories=performance --output=json
+
+# 2. Web Vitals JS 库（生产监控）
+npm install web-vitals
+# import {onLCP, onINP, onCLS} from 'web-vitals';
+# onLCP(console.log); onINP(console.log); onCLS(console.log);
+
+# 3. PageSpeed Insights（用户视角）
+# 浏览器打开 https://pagespeed.web.dev/ 输入 URL
+```
+
+### 优化对照（命中即改）
+
+| 症状 | 优化 |
+|------|------|
+| LCP > 2.5s | 首屏图 `<link rel="preload">` / 字体子集 / 关键 CSS 内联 |
+| INP > 200ms | 长任务拆解（>50ms 任务 yield）/ `useTransition` / 避免主线程 setState |
+| CLS > 0.1 | 图/视频/iframe 必须设 width/height / 字体 `font-display: swap` + 回退度量 |
+| 总下载 > 1MB | 代码分割（动态 import）/ Tree shaking / 压缩（gzip/brotli） |
+| FCP > 1.8s | SSR / SSG / 关键路径 inline CSS |
+
+### 性能预算（Phase 3 启动时定）
+
+| 资源 | 预算 |
+|------|------|
+| JS 总量（gzipped） | ≤ 200KB |
+| CSS 总量（gzipped） | ≤ 50KB |
+| 首屏图（LCP 元素） | ≤ 100KB |
+| Web 字体 | ≤ 80KB / 字体 2 种以内 |
+| 总请求数（首屏） | ≤ 30 |
+
 ## 交付物
 
 1. 完整源代码（页面/组件/样式）。
